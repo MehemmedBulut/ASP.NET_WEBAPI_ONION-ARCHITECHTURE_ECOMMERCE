@@ -1,18 +1,16 @@
-﻿
-using ECommerceAPI.Infrastructure.Operations;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+﻿using ECommerceAPI.Infrastructure.Operations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ECommerceAPI.Infrastructure.Services
+namespace ECommerceAPI.Infrastructure.Services.Storage
 {
-    public class FileService 
+    public class Storage
     {
-        async Task<string> FileRenameAsync(string path,string fileName,bool first = true)
+        protected delegate bool HasFile(string pathOrContainerName, string fileName);
+        protected async Task<string> FileRenameAsync(string pathOrContainerName, string fileName, HasFile hasFileMethod, bool first = true)
         {
             string newFileName = await Task.Run<string>(async () =>
             {
@@ -27,7 +25,7 @@ namespace ECommerceAPI.Infrastructure.Services
                 {
                     newFileName = fileName;
                     int indexNo1 = newFileName.IndexOf("-");
-                    if(indexNo1 == -1)
+                    if (indexNo1 == -1)
                         newFileName = $"{Path.GetFileNameWithoutExtension(newFileName)}-2{extension}";
                     else
                     {
@@ -50,13 +48,15 @@ namespace ECommerceAPI.Infrastructure.Services
                             _fileNo++;
                             newFileName = newFileName.Remove(indexNo1 + 1, indexNo2 - indexNo1 - 1)
                                                  .Insert(indexNo1 + 1, _fileNo.ToString());
-                        }else
+                        }
+                        else
                             newFileName = $"{Path.GetFileNameWithoutExtension(newFileName)}-2{extension}";
                     }
                 }
 
-                if (File.Exists($"{path}\\{newFileName}"))
-                    return await FileRenameAsync(path, newFileName, false);
+                //if (File.Exists($"{path}\\{newFileName}"))
+                if (hasFileMethod(pathOrContainerName, newFileName)) 
+                        return await FileRenameAsync(pathOrContainerName, newFileName,hasFileMethod, false);
                 else
                     return newFileName;
             });
