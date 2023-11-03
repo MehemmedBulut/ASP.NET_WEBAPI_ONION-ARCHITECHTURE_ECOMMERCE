@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ECommerceAPI.Application.ViewModels.Products
+namespace ECommerceAPI.Application.Features.Commands.Product.UpdateProduct
 {
-    public class VM_Update_Product
+    public class UpdateProductCommandResponse
     {
-        
     }
 }

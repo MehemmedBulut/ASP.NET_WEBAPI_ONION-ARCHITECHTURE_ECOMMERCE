@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ECommerceAPI.Application.ViewModels.Products
+namespace ECommerceAPI.Application.Features.Commands.AppUser.LoginUser
 {
-    public class VM_Update_Product
+    public class LoginUserCommandResponse
     {
-        
     }
 }
