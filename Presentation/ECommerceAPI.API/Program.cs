@@ -1,4 +1,4 @@
-using ECommerceAPI.Application;
+﻿using ECommerceAPI.Application;
 using ECommerceAPI.Application.Validators.Products;
 using ECommerceAPI.Infrastructure;
 using ECommerceAPI.Infrastructure.Filters;
@@ -6,6 +6,9 @@ using ECommerceAPI.Infrastructure.Services.Storage.Azure;
 using ECommerceAPI.Infrastructure.Services.Storage.Local;
 using ECommerceAPI.Persistance;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +28,22 @@ builder.Services.AddControllers(options=> options.Filters.Add<ValidationFilter>(
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer("Admin",options =>
+    {
+        options.TokenValidationParameters = new()
+        {
+            ValidateAudience = true, // yaradılacaq token dəyərini kimlərin\hansı origin\saytların istifadə edəcəyini müəyyən etdiyimiz dəyərdir.ex:www.bilmemne.com
+            ValidateIssuer = true, //yaradılacaq token dəyərini kimin yaydığını ifadə etdiyimiz yerdir.ex:www.myapi.com
+            ValidateLifetime = true,// yaradılan token dəyərinin vaxtını idarə edəcək olan doğrulamadır.
+            ValidateIssuerSigningKey = true,// yaradılacaq token dəyərinin aplikasiyamıza aid bir dəyər olduğunu ifadə edən security key datasının doğrulamasıdır.
+
+            ValidAudience = builder.Configuration["Token:Audience"],
+            ValidIssuer = builder.Configuration["Token:Issuer"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Token:SecurityKey"]))
+        };
+    });
+
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
@@ -36,6 +55,8 @@ app.UseStaticFiles();
 app.UseCors();
 app.UseHttpsRedirection();
 
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
