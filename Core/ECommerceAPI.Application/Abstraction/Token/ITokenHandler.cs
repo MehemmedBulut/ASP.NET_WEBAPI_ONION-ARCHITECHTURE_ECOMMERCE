@@ -10,5 +10,6 @@ namespace ECommerceAPI.Application.Abstraction.Token
     public interface ITokenHandler
     {
         DTOS.Token CreateAccessToken(int second);
+        string CreateRefreshToken();
     }
 }
