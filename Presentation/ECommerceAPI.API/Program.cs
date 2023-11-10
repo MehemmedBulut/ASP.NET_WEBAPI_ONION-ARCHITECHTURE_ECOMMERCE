@@ -55,6 +55,7 @@ Logger log = new LoggerConfiguration()
      appConfiguration: null,
      columnOptions: columnOpt
      )
+    .WriteTo.Seq(builder.Configuration["Seq:ServerUrl"])
     .Enrich.FromLogContext()
     .Enrich.With<CustomUserNameColumn>()
     .MinimumLevel.Information()
