@@ -5,16 +5,14 @@ using ECommerceAPI.Application.Validators.Products;
 using ECommerceAPI.Infrastructure;
 using ECommerceAPI.Infrastructure.Filters;
 using ECommerceAPI.Infrastructure.Services.Storage.Azure;
-using ECommerceAPI.Infrastructure.Services.Storage.Local;
 using ECommerceAPI.Persistance;
+using ECommerceAPI.SignalR;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Serilog.Context;
 using Serilog.Core;
-using Serilog.Events;
 using Serilog.Sinks.MSSqlServer;
 using System.Collections.ObjectModel;
 using System.Security.Claims;
@@ -25,11 +23,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddPersistanceServices();
 builder.Services.AddInfrastructureServices();
 builder.Services.AddApplicationServices();
+builder.Services.AddSignalRServices();
 //builder.Services.AddStorage(StorageType.Local);
 //builder.Services.AddStorage<LocalStorage>();
 builder.Services.AddStorage<AzureStorage>();
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
-policy.WithOrigins("http://localhost:3000", "https://localhost:3000").AllowAnyHeader().AllowAnyMethod()
+policy.WithOrigins("http://localhost:3000", "https://localhost:3000")
+.AllowAnyHeader()
+.AllowAnyMethod()
+.AllowCredentials()
 )) ;
 
 SqlColumn sqlColumn = new SqlColumn();
@@ -128,5 +130,6 @@ app.Use(async(context, next) =>
 });
 
 app.MapControllers();
+app.MapHubs();
 
 app.Run();
