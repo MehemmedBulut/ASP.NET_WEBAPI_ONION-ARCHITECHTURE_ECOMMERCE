@@ -20,6 +20,9 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHttpContextAccessor();//Client-dan gələn request nəticəsində yaranan
+                                          //HttpContext namespace-nə qatlardaki klaslar üzərindən(business logc)
+                                          //çatmağımızı sağlayan bir servisdir.
 builder.Services.AddPersistanceServices();
 builder.Services.AddInfrastructureServices();
 builder.Services.AddApplicationServices();
