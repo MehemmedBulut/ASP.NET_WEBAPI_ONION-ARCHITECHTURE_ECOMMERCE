@@ -8,7 +8,8 @@ namespace ECommerceAPI.Application.Abstraction.Services
 {
     public interface IMailService
     {
-        Task SendMessageAsync(string to, string subject, string body, bool IsBodyHtml = true);
-        Task SendMessageAsync(string[] tos, string subject, string body, bool IsBodyHtml = true);
+        Task SendMailAsync(string to, string subject, string body, bool IsBodyHtml = true);
+        Task SendMailAsync(string[] tos, string subject, string body, bool IsBodyHtml = true);
+        Task SendePasswordResetMailAsync(string to, string userId, string resetToken);
     }
 }
