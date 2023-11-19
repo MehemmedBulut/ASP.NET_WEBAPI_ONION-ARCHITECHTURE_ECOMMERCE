@@ -145,7 +145,7 @@ namespace ECommerceAPI.Persistance.Services
                 string resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
                 resetToken = resetToken.UrlEncode();
 
-                await _mailService.SendePasswordResetMailAsync(email, user.Id, resetToken);
+                await _mailService.SendPasswordResetMailAsync(email, user.Id, resetToken);
             }
         }
 

@@ -10,6 +10,7 @@ namespace ECommerceAPI.Application.Abstraction.Services
     {
         Task SendMailAsync(string to, string subject, string body, bool IsBodyHtml = true);
         Task SendMailAsync(string[] tos, string subject, string body, bool IsBodyHtml = true);
-        Task SendePasswordResetMailAsync(string to, string userId, string resetToken);
+        Task SendPasswordResetMailAsync(string to, string userId, string resetToken);
+        Task SendCompletedOrderMailAsync(string to, string orderCode, DateTime orderDate, string userName);
     }
 }

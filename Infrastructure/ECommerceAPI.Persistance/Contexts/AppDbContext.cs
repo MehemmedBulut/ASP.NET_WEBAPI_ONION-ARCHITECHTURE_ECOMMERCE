@@ -26,6 +26,7 @@ namespace ECommerceAPI.Persistance.Contexts
         public DbSet<InvoiceFile> InvoiceFiles { get; set; }
         public DbSet<Basket> Baskets { get; set; }
         public DbSet<BasketItem> BasketItems { get; set; }
+        public DbSet<CompletedOrder> CompletedOrders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -40,6 +41,10 @@ namespace ECommerceAPI.Persistance.Contexts
                 .HasOne(b => b.Order)
                 .WithOne(b => b.Basket)
                 .HasForeignKey<Order>(b => b.Id);
+            builder.Entity<Order>()
+                .HasOne(o => o.CompletedOrder)
+                .WithOne(c => c.Order)
+                .HasForeignKey<CompletedOrder>(c=>c.OrderId);
 
             base.OnModelCreating(builder);
         }

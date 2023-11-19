@@ -42,7 +42,7 @@ namespace ECommerceAPI.Infrastructure.Services
             smtp.Host = _configuration["Mail:Host"];
             smtp.SendMailAsync(mail);
         }
-        public async Task SendePasswordResetMailAsync(string to, string userId, string resetToken)
+        public async Task SendPasswordResetMailAsync(string to, string userId, string resetToken)
         {
             StringBuilder mail = new();
             mail.AppendLine("Salam<br> Əgər yeni şifrə tələb ettinizsə aşağıdakı linkdən şifrənizi yeniləyə bilərsiniz!<br>" +
@@ -54,6 +54,13 @@ namespace ECommerceAPI.Infrastructure.Services
             mail.AppendLine("\">Yeni şifrə tələbi üçün klikləyin...</a></strong><br><br><span style=font-size:12px;\">Not:Əgər bu tələb sizin tərəfindən gerçəkləşdirilməyibsə bu maili ciddiyə almayın</span>");
 
             await SendMailAsync(to, "Şifrə yeniləmə tələbi", mail.ToString());
+        }
+        public async Task SendCompletedOrderMailAsync(string to, string orderCode, DateTime orderDate, string userName)
+        {
+            string mail = $"Cənab {userName} Salam<br>" +
+                $"{orderDate} tarixində veridyiniz {orderCode} kodlu sifarişiniz tamamlandı və karqo firmasına verildi.";
+
+            await SendMailAsync(to, $"{orderCode} kodlu Sifarişiniz tamamlandı", mail);
         }
     }
 }
