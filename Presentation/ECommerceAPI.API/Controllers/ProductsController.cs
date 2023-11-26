@@ -1,4 +1,5 @@
-﻿using ECommerceAPI.Application.Abstraction.Storage;
+﻿using ECommerceAPI.Application.Abstraction.Services;
+using ECommerceAPI.Application.Abstraction.Storage;
 using ECommerceAPI.Application.Consts;
 using ECommerceAPI.Application.CustomAttributes;
 using ECommerceAPI.Application.Enums;
@@ -40,13 +41,14 @@ namespace ECommerceAPI.API.Controllers
         readonly IInvoiceFileWriteRepository _ınvoiceFileWriteRepository;
         readonly IStorageService _storageService;
         readonly IConfiguration configuration;
+        readonly IProductService _productService;
 
 
 
 
         readonly IMediator _mediator;
 
-        public ProductsController(IProductWriteRepository productWriteRepository, IProductReadRepository productReadRepository, IWebHostEnvironment webHostEnvironment, IFileWriteRepository fileWriteRepository, IFileReadRepository fileReadRepository, IProductImageFileReadRepository productImageFileReadRepository, IProductImageFileWriteRepository productImageFileWriteRepository, IInvoiceFileReadRepository ınvoiceFileReadRepository, IInvoiceFileWriteRepository ınvoiceFileWriteRepository, IStorageService storageService, IConfiguration configuration, IMediator mediator)
+        public ProductsController(IProductWriteRepository productWriteRepository, IProductReadRepository productReadRepository, IWebHostEnvironment webHostEnvironment, IFileWriteRepository fileWriteRepository, IFileReadRepository fileReadRepository, IProductImageFileReadRepository productImageFileReadRepository, IProductImageFileWriteRepository productImageFileWriteRepository, IInvoiceFileReadRepository ınvoiceFileReadRepository, IInvoiceFileWriteRepository ınvoiceFileWriteRepository, IStorageService storageService, IConfiguration configuration, IMediator mediator, IProductService productService)
         {
             _productWriteRepository = productWriteRepository;
             _productReadRepository = productReadRepository;
@@ -60,12 +62,19 @@ namespace ECommerceAPI.API.Controllers
             _storageService = storageService;
             this.configuration = configuration;
             _mediator = mediator;
+            _productService = productService;
         }
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery]GetAllProductQueryRequest getAllProductQueryRequest)
         {
             GetAllProductQueryResponse response = await _mediator.Send(getAllProductQueryRequest);
             return Ok(response);
+        }
+        [HttpGet("qrcode/{productId}")]
+        public async Task<IActionResult> GetQrCodeToProduct([FromRoute] string productId)
+        {
+            var data = await _productService.QRCodeToProductAsync(productId);
+            return File(data, "image/png");
         }
         [HttpGet("{Id}")]
         public async Task<IActionResult> Get([FromRoute]GetByIdProductQueryRequest getByIdProductQueryRequest)
